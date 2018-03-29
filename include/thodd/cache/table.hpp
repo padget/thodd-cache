@@ -7,16 +7,36 @@
 #  include <string>
 
 namespace thodd::cache {
+  enum class column_type {primary_key, simple, foreign_key} ;
+
+  using column = std::tuple<column_type, std::string> ;
   using record = std::vector<std::string> ;
 
   struct table  {
-    std::vector<std::string> header ;
+    std::string name ;
+    std::vector<column> header ;
     std::list<record> data ;
     std::map<std::string, record*> pk_index ; 
   } ;
 
-  inline table define_table (auto && ... header_titles) {
-    return {{header_titles...}} ;
+  inline column define_column (column_type type, auto && name) {
+    return {type, name} ;
+  }
+
+  inline column simple (auto && name) {
+    return define_column(column_type::simple, name) ;
+  }
+
+  inline column pk (auto && name) {
+    return define_column(column_type::primary_key, name) ;
+  }
+
+  inline column fk (auto && name) {
+    return define_column(column_type::foreign_key, name) ;
+  }
+
+  inline table define_table (auto && name, auto && ... columns) {
+    return {name, {columns...}} ;
   }
 
   inline int insert (table& t, auto && ... data) {
