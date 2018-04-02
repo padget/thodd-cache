@@ -28,6 +28,7 @@ void print_table (cache::table const & table) {
     std::cout << index_entry.first << ":" << index_entry.second << "\n" ;
 }
 
+
 int main() {
   cache::table tb = cache::define_table(
     "t_person", 
