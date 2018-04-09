@@ -1,5 +1,6 @@
 #include <thodd/cache/table/table-functions.hpp>
 #include <iostream>
+#include <typeinfo> 
 
 using namespace thodd ;
 
@@ -10,11 +11,26 @@ void print_record (cache::record const & rec) {
   std::cout << "\n" ; 
 }
 
+void print_column (cache::column const & col) {
+  switch(cache::get_type(col)) {
+    case cache::column_type::primary_key : std::cout << "pk    " ; break ;
+    case cache::column_type::foreign_key : std::cout << "fk    " ; break ;
+    case cache::column_type::simple      : std::cout << "simple" ; break ; 
+  }
+
+  std::cout << ' ' ;
+  std::cout << cache::get_name(col) ;
+  std::cout << '\n' ;  
+}
+
 void print_table (cache::table const & table) {
-  std::cout << "----------------- " << table.name << " ----------------\n" ; 
+  std::cout << "----------------- " 
+            << table.name 
+            << " ----------------\n" ; 
   
-  for (auto const & head : table.header)
-    std::cout << std::get<1>(head) << ',' ;
+  for (auto const & col : table.header) {
+    print_column(col) ;
+  }
 
   std::cout << '\n' ;
   
@@ -32,10 +48,10 @@ void print_table (cache::table const & table) {
 int main() {
   cache::table tb = cache::define_table(
     "t_person", 
-    cache::pk("id"), 
-    cache::simple("nom"), 
-    cache::simple("prenom"), 
-    cache::simple("age")) ;
+    cache::pk("id", cache::valid()), 
+    cache::simple("nom", cache::valid()), 
+    cache::simple("prenom", cache::valid()), 
+    cache::simple("age", cache::valid())) ;
 
   cache::insert(tb, cache::record{"1", "robert", "dupont", "25"}, 
                     cache::record{"2", "robert", "dupont", "25"}, 
