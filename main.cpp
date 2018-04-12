@@ -44,14 +44,33 @@ void print_table (cache::table const & table) {
     std::cout << index_entry.first << ":" << index_entry.second << "\n" ;
 }
 
+template<
+  typename obj_t,
+  typename diff_f, 
+  typename in_f, 
+  typename next_f>
+class iterator_factory {
+  diff_f diff ;
+  in_f   in   ;
+  next_f next ;
+  obj_t  obj  ;
+
+  iterator_factory operator ++ (iterator_factory& itf) {
+    return next(itf) ;
+  }
+  
+} ;
 
 int main() {
+
+  constexpr auto id = [] (std::string const & data) {return data;} ;
+
   cache::table tb = cache::define_table(
     "t_person", 
-    cache::pk("id", cache::valid()), 
-    cache::simple("nom", cache::valid()), 
-    cache::simple("prenom", cache::valid()), 
-    cache::simple("age", cache::valid())) ;
+    cache::pk("id", cache::valid(), id), 
+    cache::simple("nom", cache::format("rob.*"), id), 
+    cache::simple("prenom", cache::valid(), id), 
+    cache::simple("age", cache::valid(), id)) ;
 
   cache::insert(tb, cache::record{"1", "robert", "dupont", "25"}, 
                     cache::record{"2", "robert", "dupont", "25"}, 

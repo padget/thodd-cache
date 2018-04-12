@@ -15,23 +15,24 @@ namespace thodd::cache {
 
   inline column define_column (column_type type, 
                                auto && name, 
-                               constraint_f const & constraints) {
-    return {type, constraints, name} ;
+                               constraint_f const & constraints, 
+                               transformer_f const & transformer) {
+    return {type, constraints, transformer, name} ;
   }
 
-  inline column simple (auto && name, auto && constraint) {
-    return define_column(column_type::simple, name, constraint) ;
+  inline column simple (auto && name, auto && constraint, auto && transformer) {
+    return define_column(column_type::simple, name, constraint, transformer) ;
   }
 
-  inline column pk (auto && name, auto && constraint) {
+  inline column pk (auto && name, auto && constraint, auto && transformer) {
     return define_column(column_type::primary_key, name, 
       [&constraint] (std::string const & data) {
         return nullable(false)(data) && constraint(data) ;
-      }) ;
+      }, transformer) ;
   }
 
   inline column fk (auto && name) {
-    return define_column(column_type::foreign_key, name, valid()) ;
+    return define_column(column_type::foreign_key, name, valid(), [] (auto const & data) {return data ;}) ;
   }
 
   inline table define_table (auto && name, auto && ... columns) {
@@ -65,8 +66,8 @@ namespace thodd::cache {
     auto && joined = join(t.header, record) ;
 
     return t.header.size() == record.size() && 
-      std::all_of(joined.begin(), joined.end(), [] (auto const & joined_item){
-         return get_constraint(*std::get<0>(joined_item))(*std::get<1>(joined_item)) ;
+      std::all_of(joined.begin(), joined.end(), [] (auto const & joined_item) {
+         return get_constraint(*std::get<0>(joined_item))(get_transformer(*std::get<0>(joined_item))(*std::get<1>(joined_item))) ;
       }) ? 
         insert_without_check(t, record) : 
         no_inserted ;

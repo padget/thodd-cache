@@ -21,16 +21,22 @@ namespace thodd::cache {
   ///     res : constraint_validity = résultat du check (valid ou invalid) 
   using constraint_f = std::function<constraint_validity(std::string const &)> ; 
 
+  /// Signature d'une fonction de transformation pour une colonne de table
+  ///     data: std::string = donnée en entrée pour transformation
+  ///     res : std::string = donnée en sortie ayant subi la transformation
+  using transformer_f = std::function<std::string(std::string const &)> ;
+
   /// Description d'une colonne d'une table
   ///    constraint = contrainte de validation de la colonne
   ///    name = nom de la colonne
   ///    type = type de la colonne (pk, fk, simple)
-  using column = std::tuple<column_type, constraint_f, std::string> ;
+  using column = std::tuple<column_type, constraint_f, transformer_f, std::string> ;
 
   /// index de localisation d'une méta donnée dans une colonne (tuple)
-  constexpr auto ctype_idx      = 0u ;
-  constexpr auto constraint_idx = 1u ;
-  constexpr auto name_idx       = 2u ;
+  constexpr auto ctype_idx       = 0u ;
+  constexpr auto constraint_idx  = 1u ;
+  constexpr auto transformer_idx = 2u ;
+  constexpr auto name_idx        = 3u ;
 
   /** 
    * @brief Obtient le type de la colonne
@@ -57,6 +63,15 @@ namespace thodd::cache {
    */
   auto get_constraint(auto const & col) -> decltype(auto) {
     return std::get<constraint_idx>(col) ;
+  }
+
+  /** 
+   * @brief  Obtient la fonction de transformation des données de la colonne
+   * @param  col: colonne dont on veut la fonction de transformation
+   * @retval fonction de transformation de la colonne
+   */
+  auto get_transformer(auto const & col) -> decltype(auto) {
+    return std::get<transformer_idx>(col) ;
   }
 
   /// Un record est une ligne de la table matchant obligatoirement 
