@@ -1,4 +1,8 @@
 #include <thodd/cache/table/table-functions.hpp>
+
+#include <thodd/iterator/iterator.hpp>
+#include <thodd/flow/flow.hpp>
+
 #include <iostream>
 #include <typeinfo> 
 
@@ -44,40 +48,38 @@ void print_table (cache::table const & table) {
     std::cout << index_entry.first << ":" << index_entry.second << "\n" ;
 }
 
-template<
-  typename obj_t,
-  typename diff_f, 
-  typename in_f, 
-  typename next_f>
-class iterator_factory {
-  diff_f diff ;
-  in_f   in   ;
-  next_f next ;
-  obj_t  obj  ;
 
-  iterator_factory operator ++ (iterator_factory& itf) {
-    return next(itf) ;
-  }
-  
-} ;
 
-int main() {
+int main () {
+  // constexpr auto id = [] (std::string const & data) {return data;} ;
 
-  constexpr auto id = [] (std::string const & data) {return data;} ;
+  // cache::table tb = cache::define_table(
+  //   "t_person", 
+  //   cache::pk("id", cache::valid(), id), 
+  //   cache::simple("nom", cache::format("rob.*"), id), 
+  //   cache::simple("prenom", cache::valid(), id), 
+  //   cache::simple("age", cache::valid(), id)) ;
 
-  cache::table tb = cache::define_table(
-    "t_person", 
-    cache::pk("id", cache::valid(), id), 
-    cache::simple("nom", cache::format("rob.*"), id), 
-    cache::simple("prenom", cache::valid(), id), 
-    cache::simple("age", cache::valid(), id)) ;
-
-  cache::insert(tb, cache::record{"1", "robert", "dupont", "25"}, 
-                    cache::record{"2", "robert", "dupont", "25"}, 
-                    cache::record{"3", "robert", "dupont", "25"},
-                    cache::record{"4", "robert", "dupont", "25"}) ;
+  // cache::insert(tb, cache::record{"1", "robert", "dupont", "25"}, 
+  //                   cache::record{"2", "robert", "dupont", "25"}, 
+  //                   cache::record{"3", "robert", "dupont", "25"},
+  //                   cache::record{"4", "robert", "dupont", "25"}) ;
                     
-  print_table(tb) ;
+  // print_table(tb) ;
+
+
+  std::vector<int> const v {1,2,3,4,5,6,7,8,9} ;
+  constexpr auto to_listint = make_collector(
+      meta::type<std::list<int>>{},
+      [] (auto & l, auto && item) {l.push_back(item) ;}) ;
+
+  
+  for(int const & i : flow::flow(make_range(v), 
+                                 flow::map([] (int const & i) {return i * 90     ;}), 
+                                 flow::map([] (int const & i) {return i * 100    ;}), 
+                                 flow::collect(to_listint))) 
+    std::cout << "i" << i << std::endl ;
+  
 
   return EXIT_SUCCESS ;
 }
