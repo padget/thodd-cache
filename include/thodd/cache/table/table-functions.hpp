@@ -3,6 +3,8 @@
 
 #  include <thodd/cache/table/table.hpp>
 #  include <thodd/cache/table/table-constraint.hpp>
+#  include <thodd/iterator/iterator.hpp>
+#  include <thodd/flow/fluent.hpp>
 
 #  include <algorithm>
 #  include <iostream>
@@ -39,39 +41,45 @@ namespace thodd::cache {
     return {name, {columns...}} ;
   }
 
+
+
   inline int insert_without_check (table & t, auto const & record) {
     t.data.push_back(record) ;
     t.pk_index[t.data.back()[0]] = &t.data.back() ;
     return one_inserted ;
   }
 
-  inline auto join (auto const & l, auto const & r) {
-    using join_item_t = decltype(std::make_tuple(&*std::begin(l), &*std::begin(r))) ;
-
-    std::vector<join_item_t> joined ;
-    
-    auto lb = std::begin(l) ;
-    auto rb = std::begin(r) ;
-
-    while (lb != std::end(l) && rb != std::end(r)) {
-      joined.push_back(std::make_tuple(&*lb, &*rb)) ;
-      lb = std::next(lb) ;
-      rb = std::next(rb) ;
+  namespace collectors {
+    auto to_record () {
+      return make_collector(
+        meta::type<thodd::cache::record>{}, 
+        [] (auto & collection, auto const & value) {
+          collection.push_back(value) ;
+        }) ;
     }
-
-    return joined ;
   }
+
 
   inline int insert_one(table & t, auto const & record) {
-    auto && joined = join(t.header, record) ;
+    auto && transformed_record = 
+      thodd::flow::as_stream(t.header)
+        .join(make_range(record))
+        .map_n([](auto const & head, auto const & value) {
+          return get_transformer(head)(value) ;})
+        .collect(collectors::to_record()) ; 
+    
+    auto && all_checked = 
+      thodd::flow::as_stream(t.header)
+        .join(make_range(transformed_record))
+        .reduce_n(
+          [] (auto const & head, auto const & value, auto const & acc) {
+            return acc && get_constraint(head)(value) ;
+          }, true) ;
 
-    return t.header.size() == record.size() && 
-      std::all_of(joined.begin(), joined.end(), [] (auto const & joined_item) {
-         return get_constraint(*std::get<0>(joined_item))(get_transformer(*std::get<0>(joined_item))(*std::get<1>(joined_item))) ;
-      }) ? 
-        insert_without_check(t, record) : 
-        no_inserted ;
+    return t.header.size() == transformed_record.size() && all_checked ? 
+      insert_without_check(t, transformed_record) : no_inserted ;
   }
+
 
   inline int insert (table & t, auto const & first_record, auto const & ... records) {    
     if constexpr (sizeof...(records) > 0) 
@@ -79,12 +87,6 @@ namespace thodd::cache {
     else 
       return insert_one(t, first_record);
   } 
-
-
-
-
-
-
 }
 
 #endif 
