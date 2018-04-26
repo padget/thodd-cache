@@ -1,5 +1,5 @@
-#ifndef __thodd_cache_iterator_filter_hpp__
-#  define __thodd_cache_iterator_filter_hpp__
+#ifndef __thodd_cache_stream_filter_hpp__
+#  define __thodd_cache_stream_filter_hpp__
 
 namespace thodd {
   /// map_iterator est un iterateur permettant de wrapper 
@@ -41,7 +41,6 @@ namespace thodd {
       if(has_next(fit.it)) 
         next(fit.it) ; 
     while (!fit.predicate(in(fit.it))) ; 
-    
     return fit ; 
   }
 

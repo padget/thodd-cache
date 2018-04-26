@@ -1,8 +1,8 @@
-#ifndef __thodd_cache_iterator_join_hpp__
-#  define __thodd_cache_iterator_join_hpp__
+#ifndef __thodd_cache_stream_join_hpp__
+#  define __thodd_cache_stream_join_hpp__
 
 #  include <tuple>
-#  include <thodd/iterator/foreach.hpp>
+#  include <thodd/stream/foreach.hpp>
 
 // TODO Documentation à revoir
 namespace thodd {
@@ -44,7 +44,7 @@ namespace thodd {
   template <typename ... iterator_t>
   auto next (join_iterator<iterator_t...> & jit) -> decltype(jit) {
     jit.its = std::apply([] (auto & ... its) {return std::make_tuple(next(its)...) ;}, jit.its) ;
-    return jit ; 
+    return jit ;
   }
 
   /** 

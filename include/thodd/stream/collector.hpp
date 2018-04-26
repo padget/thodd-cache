@@ -1,5 +1,5 @@
-#ifndef __thodd_cache_iterator_collector_hpp__
-#  define __thodd_cache_iterator_collector_hpp__
+#ifndef __thodd_cache_stream_collector_hpp__
+#  define __thodd_cache_stream_collector_hpp__
 
 namespace thodd {
   

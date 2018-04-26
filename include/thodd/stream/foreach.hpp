@@ -1,5 +1,5 @@
-#ifndef __thodd_iterator_iteration_hpp__
-#  define __thodd_iterator_iteration_hpp__
+#ifndef __thodd_stream_iteration_hpp__
+#  define __thodd_stream_iteration_hpp__
 
 
 namespace thodd {

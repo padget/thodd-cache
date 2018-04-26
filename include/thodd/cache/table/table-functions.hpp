@@ -3,8 +3,8 @@
 
 #  include <thodd/cache/table/table.hpp>
 #  include <thodd/cache/table/table-constraint.hpp>
-#  include <thodd/iterator/iterator.hpp>
-#  include <thodd/iterator/fluent.hpp>
+#  include <thodd/stream/stream.hpp>
+#  include <thodd/stream/fluent.hpp>
 
 #  include <algorithm>
 #  include <iostream>

@@ -1,5 +1,5 @@
-#ifndef __thodd_cache_iterator_mapper_hpp__
-#  define __thodd_cache_iterator_mapper_hpp__
+#ifndef __thodd_cache_stream_mapper_hpp__
+#  define __thodd_cache_stream_mapper_hpp__
 
 namespace thodd {
   /// map_iterator est un iterateur permettant de wrapper 
@@ -25,7 +25,7 @@ namespace thodd {
    * @brief Détermine si l'iterator possède un suivant.
    * @retval Retourne true si il y a un suivant, false sinon.
    */
-  bool has_next (map_iterator<auto, auto> const mit) {
+  bool has_next (map_iterator<auto, auto> const & mit) {
     return has_next(mit.it) ;
   }
 
@@ -34,7 +34,7 @@ namespace thodd {
    */
   auto next (map_iterator<auto, auto> & mit) -> decltype(mit) {
     next(mit.it) ;
-    return mit ; 
+    return mit ;
   }
 
   /** 

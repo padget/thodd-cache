@@ -1,7 +1,9 @@
 #include <thodd/cache/table/table-functions.hpp>
 
-#include <thodd/iterator/iterator.hpp>
-#include <thodd/iterator/fluent.hpp>
+#include <thodd/stream/stream.hpp>
+#include <thodd/stream/fluent.hpp>
+
+#include <thodd/experimental/list.hpp>
 
 #include <iostream>
 #include <typeinfo> 
@@ -48,8 +50,23 @@ void print_table (cache::table const & table) {
     std::cout << index_entry.first << ":" << index_entry.second << "\n" ;
 }
 
+void test_flist () {
+  collection::list<int> ints ;
+  ints = collection::push(ints, 2) ;
+  std::cout << "flist test" << std::endl ; 
+  std::cout << ints.size << std::endl ; 
+
+  thodd::foreach(ints.first, [] (auto const & i) {
+    std::cout << i << std::endl ; 
+  }) ;
+
+}
+
 
 int main () {
+
+  test_flist() ;
+
   constexpr auto id = [] (std::string const & data) {
     return data ;
   } ;

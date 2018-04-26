@@ -1,7 +1,7 @@
-#ifndef __thodd_iterator_fluent_hpp__
-#  define __thodd_iterator_fluent_hpp__
+#ifndef __thodd_stream_fluent_hpp__
+#  define __thodd_stream_fluent_hpp__
 
-#  include <thodd/iterator/iterator.hpp>
+#  include <thodd/stream/stream.hpp>
 
 namespace thodd {
 
