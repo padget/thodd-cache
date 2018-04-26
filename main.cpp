@@ -1,8 +1,7 @@
 #include <thodd/cache/table/table-functions.hpp>
 
 #include <thodd/iterator/iterator.hpp>
-#include <thodd/flow/flow.hpp>
-#include <thodd/flow/fluent.hpp>
+#include <thodd/iterator/fluent.hpp>
 
 #include <iostream>
 #include <typeinfo> 

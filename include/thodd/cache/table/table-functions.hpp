@@ -4,7 +4,7 @@
 #  include <thodd/cache/table/table.hpp>
 #  include <thodd/cache/table/table-constraint.hpp>
 #  include <thodd/iterator/iterator.hpp>
-#  include <thodd/flow/fluent.hpp>
+#  include <thodd/iterator/fluent.hpp>
 
 #  include <algorithm>
 #  include <iostream>
@@ -62,14 +62,14 @@ namespace thodd::cache {
 
   inline int insert_one(table & t, auto const & record) {
     auto && transformed_record = 
-      thodd::flow::as_stream(t.header)
+      thodd::as_stream(t.header)
         .join(make_range(record))
         .map_n([](auto const & head, auto const & value) {
           return get_transformer(head)(value) ;})
         .collect(collectors::to_record()) ; 
     
     auto && all_checked = 
-      thodd::flow::as_stream(t.header)
+      thodd::as_stream(t.header)
         .join(make_range(transformed_record))
         .reduce_n(
           [] (auto const & head, auto const & value, auto const & acc) {
