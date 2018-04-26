@@ -1,9 +1,9 @@
-#ifndef __thodd_flow_fluent_hpp__
-#  define __thodd_flow_fluent_hpp__
+#ifndef __thodd_iterator_fluent_hpp__
+#  define __thodd_iterator_fluent_hpp__
 
 #  include <thodd/iterator/iterator.hpp>
 
-namespace thodd::flow {
+namespace thodd {
 
   template <typename iterator_t>
   struct stream ;
