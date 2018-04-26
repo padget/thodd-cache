@@ -59,8 +59,13 @@ namespace thodd {
     return {{it...}} ;
   }
 
+  /** 
+   * @brief  Fonction appliquant on_each sur un join_iterator
+   * @param  jit: join_iterator sur lequel on va appliquer on_each
+   * @param  on_each: fonction appliqué sur jit
+   */
   template <typename ... iterator_t>
-  auto foreach_n (join_iterator<iterator_t...> const & jit, auto const & on_each) {
+  void foreach_n (join_iterator<iterator_t...> const & jit, auto const & on_each) {
     auto cursor = jit ;
 
     while (has_next(cursor)) {
@@ -69,6 +74,13 @@ namespace thodd {
     }
   }
 
+  /** 
+   * @brief  Applique une réduction reducer sur l'it avec pour valeur initiale de reduction init 
+   * @param  it: iterator sur lequel la réduction sera appliquée
+   * @param  reducer: fonction d'accumulation appliquée
+   * @param  init: valeur initiale de l'accumulation
+   * @retval résultat de l'accumulation sur it
+   */
   template <typename ... iterator_t>
   auto reduce_n (join_iterator<iterator_t...> const & it, auto const & reducer, auto const & init) {
     auto res = init ; 
@@ -79,6 +91,12 @@ namespace thodd {
     return res ;
   }
 
+  /** 
+   * @brief Fonction appliquant une fonction de mapping sur un join_iterator  
+   * @param  jit: join_iterator sur lequel on va appliquer le mapping
+   * @param  mapper_n: fonction de mapping appliquée sur jit
+   * @retval un iterator de mapping portant jit et mapping
+   */
   template <typename ... iterator_t>
   auto map_n (join_iterator<iterator_t...> const & jit, auto const & mapper_n) {
     return map(jit, [mapper_n] (auto const & items) {
@@ -86,6 +104,12 @@ namespace thodd {
     }) ;
   }
 
+  /** 
+   * @brief  Fonction appliquant un filtrage sur un join_iterator
+   * @param  jit: join_iterator sur lequel on va appliquer le filtrage
+   * @param  predicate_n: predicat de filtrage
+   * @retval un iterator de filtrage portant predicate et jit
+   */
   template <typename ... iterator_t>
   auto filter_n (join_iterator<iterator_t...> const & jit, auto const & predicate_n) {
     return filter(jit, [predicate_n] (auto const & items) {

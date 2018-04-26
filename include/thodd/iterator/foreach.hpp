@@ -17,6 +17,13 @@ namespace thodd {
     }
   }
 
+  /** 
+   * @brief  Applique une réduction reducer sur l'it avec pour valeur initiale de reduction init 
+   * @param  it: iterator sur lequel la réduction sera appliquée
+   * @param  reducer: fonction d'accumulation appliquée
+   * @param  init: valeur initiale de l'accumulation
+   * @retval résultat de l'accumulation sur it
+   */
   auto reduce (auto const & it, auto const & reducer, auto const & init) {
     auto res = init ;
     foreach(it, [&res, reducer=reducer] (auto const & value) {

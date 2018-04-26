@@ -9,8 +9,12 @@ namespace thodd {
   struct basic_collector {
     using collection_type = collection_t ;
 
+    // Fonction permettant l'ajout d'un element 
+    // dans une collection de type collection_t
     append_t append ;
 
+    // Surcharge de l'opération fonctionnel permettant l'application
+    // d'append sur une collection et un item à ajouter
     void operator () (collection_type & collection, auto && item) const {
       append(collection, std::forward<decltype(item)>(item)) ;
     }
